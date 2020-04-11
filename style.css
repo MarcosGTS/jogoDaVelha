@@ -1,0 +1,21 @@
+body{
+    background: linear-gradient(to right , #E60DFF, #5800FF,#0D3AFF);
+    font-family: sans-serif;
+}
+h1{
+    text-align: center;
+}
+
+.container{
+    justify-content: center;
+    display: grid;
+    grid-template-columns: 4em 4em 4em;
+}
+
+button{
+    height: 5em;
+    width: 5em;
+    color: black;
+    background-color: rgb(164, 172, 209);
+    border: none;
+}
