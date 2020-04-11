@@ -1,23 +1,28 @@
 const botoes = document.querySelectorAll('button');
+const campeao = document.querySelector('.campeao');
 let jogadorA = 0;
+
 
 for(let i = 0; i < botoes.length; i++){
     botoes[i].addEventListener('click', function(){
-        if(jogadorA == 0){
+        if(jogadorA == 0 && this.innerText == "" && !verificarV(botoes)){
             this.innerText = "X";
             this.style.backgroundColor = "#230A59"
-        } else {
+            jogadorA = jogadorA == 0 ? 1 : 0;
+
+        } else if(jogadorA == 1 && this.innerText == "" && !verificarV(botoes)) {
             this.innerText = "O";
             this.style.backgroundColor = "#829FD9"
+            jogadorA = jogadorA == 0 ? 1 : 0;
         }
 
-        jogadorA = jogadorA == 0 ? 1 : 0;
+        
         if(verificarV(botoes)){
-            console.log(jogadorA);
+            mostraC(jogadorA);
             restart(botoes);
         }
-
-        empate(botoes,verificarV(botoes));
+        empate(botoes)
+       
     })
 
 }
@@ -28,6 +33,7 @@ function verificarS(a,b,c){
 }
 
 function verificarV(vetor){
+
     for(let i = 0; i < 3 ; i++){
         if(verificarS(vetor[i+0].innerText, vetor[i+3].innerText, vetor[i+6].innerText)){
             return true;
@@ -48,7 +54,6 @@ function verificarV(vetor){
         return true;
     }
 
-
     return false
 }
 
@@ -57,19 +62,28 @@ function restart(array){
         for(let i =0; i < array.length; i++){
             array[i].innerText = "";
             array[i].style.backgroundColor = 'rgb(164, 172, 209)'
+            campeao.innerHTML = "<p>Em partida</p>";
         }
     },2000)
 }
 
-function empate(array, ganhador){
+function empate(array){
     let flag = false;
     for(let i = 0; i < array.length; i++){
         if(array[i].innerText == ""){
-            break;
+            flag = true;
         }
-        flag = true;
+        
     }
-    if(flag && ganhador){
-        restart();
+    if(!flag){
+        campeao.innerText = "Empate"
+        restart(array);
+        flag = false;
+        
     }
+}
+
+function mostraC(player){
+    let ganhador = player == 0 ? "O" : "X";
+    campeao.innerHTML = `<p>Ganhador ${ganhador}</p>`;
 }

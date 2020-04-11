@@ -18,4 +18,15 @@ button{
     color: black;
     background-color: rgb(164, 172, 209);
     border: none;
+    font-weight: bold;
+}
+
+.campeao {
+    width: 6em;
+    margin:2em auto 0 auto;
+    text-align: center;
+    font-weight: bold;
+    background-color:rgb(164, 172, 209);
+    padding: 10px;
+    border-radius: 4px;
 }
