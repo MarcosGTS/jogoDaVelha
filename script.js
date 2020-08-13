@@ -8,12 +8,12 @@ for(let i = 0; i < botoes.length; i++){
         if(jogadorA == 0 && this.innerText == "" && !verificarV(botoes)){
             this.innerText = "X";
             this.style.backgroundColor = "#230A59"
-            jogadorA = jogadorA == 0 ? 1 : 0;
+            jogadorA = jogadorA == 0;
 
         } else if(jogadorA == 1 && this.innerText == "" && !verificarV(botoes)) {
             this.innerText = "O";
             this.style.backgroundColor = "#829FD9"
-            jogadorA = jogadorA == 0 ? 1 : 0;
+            jogadorA = jogadorA == 0;
         }
 
         
