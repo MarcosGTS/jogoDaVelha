@@ -1,22 +1,22 @@
 const botoes = document.querySelectorAll('button');
 const campeao = document.querySelector('.campeao');
-let jogadorA = 0;
-
+let jogadorA = Math.random() * 10;
 
 for(let i = 0; i < botoes.length; i++){
     botoes[i].addEventListener('click', function(){
-        if(jogadorA == 0 && this.innerText == "" && !verificarV(botoes)){
+        if(jogadorA > 4 && this.innerText == "" && !verificarV(botoes)){
             this.innerText = "X";
             this.style.backgroundColor = "#230A59"
-            jogadorA = jogadorA == 0;
+            jogadorA = 0;
 
-        } else if(jogadorA == 1 && this.innerText == "" && !verificarV(botoes)) {
+        } else if(jogadorA <= 4  && this.innerText == "" && !verificarV(botoes)) {
             this.innerText = "O";
             this.style.backgroundColor = "#829FD9"
-            jogadorA = jogadorA == 0;
+            jogadorA = 5;
         }
 
-        
+        currentPlayer( jogadorA );
+
         if(verificarV(botoes)){
             mostraC(jogadorA);
             restart(botoes);
@@ -26,8 +26,6 @@ for(let i = 0; i < botoes.length; i++){
     })
 
 }
-
-
 function verificarS(a,b,c){
     return(a == b && b == c && a != "");
 }
@@ -84,6 +82,12 @@ function empate(array){
 }
 
 function mostraC(player){
-    let ganhador = player == 0 ? "O" : "X";
-    campeao.innerHTML = `<p>Ganhador ${ganhador}</p>`;
+    let ganhador = player > 4 ? "O" : "X";
+    campeao.innerHTML = `<p>Ganhador:${ganhador}</p>`;
 }
+
+function currentPlayer( jogador ){
+    let player = jogador > 4 ? "X" : "O";
+    campeao.innerHTML = `<p>Jogado Atual:${player}</p>`; 
+}
+
