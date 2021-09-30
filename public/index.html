@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Jogo da velha</title>
+    <style>
+        #canvas{
+            border: 1px solid violet;
+        }
+    </style>
+
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+    <div id="playersList"></div>
+    <script type="module">
+        import createGame from "./game.js";
+        import createInputListener from "./mouse.js"
+        import {renderScreen, renderPlayers} from "./renderScreen.js"
+
+        const cavans = document.getElementById("canvas");
+        const playersList = document.getElementById("playersList");
+    
+        const game = createGame()
+        const mouseListerner = createInputListener(document, game.state, canvas)
+
+        mouseListerner.subscribe(game.movePlayer)
+
+        const socket = io()
+
+        socket.on("connect", () => {
+            console.log(`> Player ${socket.id} connected`)
+        })
+
+        socket.on("init", (state) => {
+            console.log("State reveived")
+            console.log(state)
+            game.initState(state)     
+        })
+
+        renderScreen(game, canvas, requestAnimationFrame)
+        renderPlayers(game, playersList, requestAnimationFrame)
+
+    </script>
+</body>
+</html>

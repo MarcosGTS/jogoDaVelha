@@ -1,0 +1,28 @@
+{
+  "name": "jogoDaVelha",
+  "version": "1.0.0",
+  "description": "Uma tentativa de criar uma jogo da velha.",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarcosGTS/jogoDaVelha.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MarcosGTS/jogoDaVelha/issues"
+  },
+  "homepage": "https://github.com/MarcosGTS/jogoDaVelha#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.13"
+  },
+  "type": "module",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.2.0"
+  }
+}
