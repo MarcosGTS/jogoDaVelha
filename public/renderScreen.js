@@ -1,7 +1,8 @@
 export function renderScreen(game, canvas, requestAnimationFrame) {
     const state = game.state
     const context = canvas.getContext('2d')
-
+    context.clearRect(0, 0, 500, 500 )
+    
     const WIDTH = Number(canvas.width)
     const HEIGHT = Number(canvas.height)
 
@@ -27,13 +28,13 @@ export function renderScreen(game, canvas, requestAnimationFrame) {
     
 }
 
-export function renderPlayers (game, playersList, requestAnimationFrame) {
-    let html = ""
-    for (const player in game.state.players){
-        html += `<p>${player}<p>`
-    }
-    playersList.innerHTML = html
-    requestAnimationFrame(() => {
-        renderPlayers(game, playersList, requestAnimationFrame)
-    })
-}
+// export function renderPlayers (game, playersList, requestAnimationFrame) {
+//     let html = ""
+//     for (const player in game.state.players){
+//         html += `<p>${player}<p>`
+//     }
+//     playersList.innerHTML = html
+//     requestAnimationFrame(() => {
+//         renderPlayers(game, playersList, requestAnimationFrame)
+//     })
+// }

@@ -11,7 +11,9 @@ app.use(express.static("public"))
 
 const game = createGame()
 
-console.log(game.state)
+game.subscribe((command) => {
+    sockets.emit(command.emitType, command.command)
+})
 
 sockets.on('connection', (socket) => {
     const playerId = socket.id
@@ -22,7 +24,12 @@ sockets.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log(`> Player ${playerId} disconnected`)
-        game.removePlayer(playerId)
+        game.removePlayer({id: playerId})
+    })
+
+    socket.on("client-move", (command) => {
+        game.movePlayer(command)
+        console.log(game.state)
     })
 
 })

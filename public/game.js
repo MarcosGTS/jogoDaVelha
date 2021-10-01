@@ -7,47 +7,95 @@ export default function createGame (){
         players: {
         },
 
-        cores: ["red", "purple"],
+        colors: ["red", "purple"],
 
         screen: {w: 3, h: 3},
 
-        currentPlayer: "player1"
+        currentPlayer: null
     }
 
-    function addPlayer (player){
-        const playerId = player.id
-        const score = (player["score"]) ? player["score"] : 0
-        const color = state.cores.pop()
+    const observers = []
 
-        state.players[playerId] = {score, color}
+    function subscribe(observerFunction) {
+        observers.push(observerFunction)
     }
 
-    function removePlayer(player){
-        delete state.players[player]
+    function notifyAll (command){
+        for (const observerFunction of observers){
+            observerFunction(command)
+        }
+    }
+
+    function addPlayer (command){
+        const playerId = command.id
+        const score = ("score" in command) ? command["score"] : 0
+        const color = ("color" in command) ? command.color : state.colors.pop()
+
+        state.players[playerId] = {score: score, color: color}
+
+        notifyAll({
+            emitType: "add-player",
+            command: {
+                id: playerId,
+                score: score,
+                color: color
+            }
+        })
+    }
+
+    function removePlayer(command){
+        const playerId = command.id
+        const playerColor = state.players[playerId].color
+        
+        if (playerColor)
+            state.colors.push(playerColor)
+       
+        delete state.players[playerId]
+
+        notifyAll({
+            emitType: "remove-player",
+            command:{
+                id: playerId
+            }
+        })
     }
     
     function initState (newState) {
         Object.assign(state, newState)
     }
-
+    //SOLUCAO: antes de efetuar o movimento verificar se o jogador esta entre os players
     function movePlayer (command) {
         const table = state.table
         const move = command.move
+        const currentPlayer = state.currentPlayer
 
-        //if (state.currentPlayer === command.player){
+        if (command.player in state.players && (!currentPlayer || currentPlayer != `${command.player}`)){
             if (table[move.y][move.x] == ""){
                 table[move.y][move.x] = command.player
-                console.log(`WINNER? -> ${verifyVictory()}`)
-                updateCurrentPlayer(state.currentPlayer)
-            }   
-        
-        //}
+                
+                state.currentPlayer = command.player
+            }  
+        }
+
+        if (verifyVictory()) {
+            console.log (`Winner ${currentPlayer}`)
+            resetGame()
+        }else {
+            notifyAll({
+                emitType: "move-player",
+                command: command
+            })
+        }
     }
 
-    function updateCurrentPlayer(currentPlayer){
-        for (const player in state.players){
-            if ( player != currentPlayer ) 
-                state.currentPlayer = player       
+    function updateCurrentPlayer(){
+        const players = Object.keys(state.players)
+        for (const player of players){
+            console.log(player)
+            if (player != state.currentPlayer){
+                state.currentPlayer = player
+                break;
+            }
         }
     }
 
@@ -56,12 +104,17 @@ export default function createGame (){
 
     function verifyVictory (){
         const table = state.table
-        for (let i = 0; i < state.screen.height; i++){
+
+        if (!state.currentPlayer in state.players){
+            return true
+        }
+
+        for (let i = 0; i < state.screen.h; i++){
             if (table[i][0] == table[i][1] && table[i][1] == table[i][2] && table[i][0] != "")
                 return true
             
         }
-        for (let i = 0; i < state.screen.width; i++){
+        for (let i = 0; i < state.screen.w; i++){
             if (table[0][i] == table[1][i] && table[1][i] == table[2][i]  && table[0][i] != "")
                 return true
             
@@ -75,7 +128,22 @@ export default function createGame (){
             return true
         }
 
+        
+
         return false
+    }
+
+    function resetGame (){
+        for (let i = 0; i < state.screen.h; i++){
+            for (let j = 0; j < state.screen.w; j++){
+                state.table[i][j] = ""
+            }
+        }
+        state.currentPlayer = null
+
+        notifyAll({
+            emitType: "reset-game",
+        })
     }
 
     return {
@@ -84,7 +152,10 @@ export default function createGame (){
         updateCurrentPlayer,
         initState,
         addPlayer,
-        removePlayer
+        removePlayer,
+        subscribe, 
+        notifyAll,
+        resetGame
     }
 }
 

@@ -1,4 +1,4 @@
-export default function createInputListener(document, gameState, canvas) {
+export default function createInputListener(document, gameState, canvas, playerId) {
     
     document.addEventListener("click", inputHandle)
     const screen = gameState.screen
@@ -56,7 +56,7 @@ export default function createInputListener(document, gameState, canvas) {
                 }
 
                 const command = {
-                    player: "player1",
+                    player: playerId,
                     move: {y:i, x:j}
                 }
 

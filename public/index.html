@@ -19,21 +19,28 @@
     <script type="module">
         import createGame from "./game.js";
         import createInputListener from "./mouse.js"
-        import {renderScreen, renderPlayers} from "./renderScreen.js"
+        import { renderScreen } from "./renderScreen.js"
 
         const cavans = document.getElementById("canvas");
         const playersList = document.getElementById("playersList");
     
         const game = createGame()
-        const mouseListerner = createInputListener(document, game.state, canvas)
-
-        mouseListerner.subscribe(game.movePlayer)
-
+        let mouseListerner
         const socket = io()
 
         socket.on("connect", () => {
-            console.log(`> Player ${socket.id} connected`)
+            const playerId = socket.id 
+            //document.getElementById("playerList").innerText = playerId
+            console.log(`> Player ${playerId} connected`)
+            
+            mouseListerner = createInputListener(document, game.state, canvas, playerId)
+            mouseListerner.subscribe(game.movePlayer)
+            mouseListerner.subscribe(clientMove)
         })
+
+        function clientMove(command) {
+            socket.emit("client-move", command);
+        }
 
         socket.on("init", (state) => {
             console.log("State reveived")
@@ -41,8 +48,26 @@
             game.initState(state)     
         })
 
+        socket.on("add-player", (command) => {
+            console.log(`> Player ${command.id} added`)
+            game.addPlayer(command)
+        })
+
+        socket.on("remove-player", (command) => {
+            console.log(`> Player ${command.id} removed`)
+            game.removePlayer(command)
+        })
+
+        socket.on("move-player", (command) => {
+            game.movePlayer(command)
+        })
+
+        socket.on("reset-game", (command) => {
+            game.resetGame()
+        })
+
         renderScreen(game, canvas, requestAnimationFrame)
-        renderPlayers(game, playersList, requestAnimationFrame)
+        //renderPlayers(game, playersList, requestAnimationFrame)
 
     </script>
 </body>
