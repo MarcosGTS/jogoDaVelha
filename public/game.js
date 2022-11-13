@@ -77,10 +77,13 @@ export default function createGame (){
             }  
         }
 
-        if (verifyVictory()) {
+        if (isDraw()) {
+            console.log (`Draw`)
+            resetGame()
+        } else if (verifyVictory()) {
             console.log (`Winner ${currentPlayer}`)
             resetGame()
-        }else {
+        } else {
             notifyAll({
                 emitType: "move-player",
                 command: command
@@ -101,6 +104,15 @@ export default function createGame (){
 
     //Pode ser melhorado
     //verificar apenas a linha do movimento e nao todos os elementos
+    function isDraw() {
+        let fullTable = []
+        
+        for (let line of state.table) {
+            fullTable = fullTable.concat(line);
+        }
+        
+        return !verifyVictory() && !fullTable.some(e => e == "")
+    }
 
     function verifyVictory (){
         const table = state.table
@@ -128,17 +140,17 @@ export default function createGame (){
             return true
         }
 
-        
-
         return false
     }
 
     function resetGame (){
+       
         for (let i = 0; i < state.screen.h; i++){
             for (let j = 0; j < state.screen.w; j++){
                 state.table[i][j] = ""
             }
         }
+
         state.currentPlayer = null
 
         notifyAll({

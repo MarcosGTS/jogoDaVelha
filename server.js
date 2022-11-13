@@ -24,6 +24,8 @@ sockets.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log(`> Player ${playerId} disconnected`)
+        let player = game.state.players[playerId];
+        if (player["color"]) game.resetGame();
         game.removePlayer({id: playerId})
     })
 
